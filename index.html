@@ -103,7 +103,7 @@
 			
 			(function __main__(win) {
 				win.addEventListener('resize', calibrate, false);
-				win.addEventListener('load', calibrate, false);
+				setInterval(calibrate, 250);
 			})(window);
 		//-->
 		</script>
