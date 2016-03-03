@@ -1,16 +1,111 @@
 <!doctype html>
 
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-
-  <title>Happy Birthday or whatever</title>
-</head>
-
-<body>
-  <img src="https://media.giphy.com/media/xT0BKqxuUDfosKEXXG/giphy.gif" />
-  <script type="text/javascript">
-  // place code for sizing gif appropriately
-  </script>
-</body>
+	<head>
+		<meta charset="utf-8">
+		<title>Happy Birthday or whatever</title>
+		
+		<style type="text/css">
+		<!--
+			body {
+				position:fixed;
+				width:100%;
+				height:100%;
+				overflow:hidden;
+				margin:0;
+				padding:0;
+			}
+			
+			#gif {
+				position:absolute;
+				top:0;
+				left:0;
+				opacity:0;
+			}
+		-->
+		</style>
+	</head>
+	<body>
+		<img id="gif" src="cake.gif" />
+		<script type="text/javascript">
+		<!--
+			var _gif = document.getElementById('gif');
+			var _body = document.body;
+			
+			function Box(x, y, w, h) {
+				this.x = x,
+				this.y = y;
+				this.w = w;
+				this.h = h;
+			};
+			
+			function get_box_ratio(box) {
+				return box.w / box.h;
+			};
+			
+			function get_factor(a, b) {
+				// a * <factor> = b. Therefore: <factor> = b / a.
+				return b / a;
+			};
+			
+			function match_width(image, mask) {
+				image.w = mask.w;
+				image.h = image.h * get_factor(image.w, mask.w);
+				return image;
+			};
+			
+			function match_height(image, mask) {
+				image.w = image.w * get_factor(image.h, mask.h);
+				image.h = mask.h;
+				return image;
+			};
+			
+			function get_offset(a, b) {
+				return (a - b) / -2;
+			};
+			
+			function offset_image(image, mask) {
+				image.x = get_offset(image.w, mask.w);
+				image.y = get_offset(image.h, mask.h);
+				return image;
+			};
+			
+			function render_image(dom, box) {
+				window.requestAnimationFrame(function() {
+					dom.style.left = box.x + 'px';
+					dom.style.top = box.y + 'px';
+					dom.style.width = box.w + 'px';
+					dom.style.height = box.h + 'px';
+					
+					dom.style.opacity = '1';
+				});
+			};
+			
+			function calibrate() {
+				var body = _body;
+				var gif = _gif;
+				
+				var mask = new Box(0, 0, body.offsetWidth, body.offsetHeight);
+				var image = new Box(0, 0, gif.width, gif.height);
+				
+				var image_ratio = get_box_ratio(image);
+				var mask_ratio = get_box_ratio(mask);
+				
+				if (image_ratio >= mask_ratio)
+					image = match_height(image, mask);
+				else
+					image = match_width(image, mask);
+				
+				image = offset_image(image, mask);
+				
+				render_image(gif, image);
+			};
+			
+			(function __main__(win) {
+				win.addEventListener('resize', calibrate, false);
+				win.addEventListener('load', calibrate, false);
+			})(window);
+		//-->
+		</script>
+	</body>
 </html>
